@@ -3,7 +3,7 @@
 Prototype of validation checks for OBO ontologies using the [Shapes Constraint Language (SHACL)](https://www.w3.org/TR/shacl/#constraints-inverse-property). This uses the [SHACL implementation by TopQuadrant](https://github.com/TopQuadrant/shacl).
 
 ## Test shapes
-An initial set of implemented constraints can be found in `shapes.ttl`.
+An initial set of implemented constraints can be found in [shapes.ttl](https://github.com/balhoff/shacl-tests/blob/master/shapes.ttl).
 
 ## Building
 
