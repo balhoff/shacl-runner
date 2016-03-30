@@ -1,0 +1,124 @@
+@prefix      rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+@prefix     rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+@prefix       sh: <http://www.w3.org/ns/shacl#>
+@prefix      xsd: <http://www.w3.org/2001/XMLSchema#>
+@prefix      owl: <http://www.w3.org/2002/07/owl#>
+@prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+@prefix       ex: <http://example.org/>
+
+
+ex:TextValuesShouldNotContainDoubleSpaces
+    rdfs:label "Text values should not contain double spaces." ;
+    a sh:Shape ;
+    sh:scope [
+        a sh:AllObjectsScope ;
+    ] ;
+    sh:filterShape [
+        sh:constraint [
+            sh:nodeKind sh:Literal ;
+            sh:datatype xsd:string 
+        ]
+    ] ;
+    sh:constraint [
+        sh:not [
+            sh:constraint [
+                sh:pattern "  "
+            ]
+        ]
+    ] .
+
+
+ex:NoSynonymShouldEqualLabel
+    rdfs:label "A synonym should not be the same as the label of a term." ;
+    a sh:Shape ;
+    sh:scope [
+        a sh:AllSubjectsScope ;
+    ] ;
+    sh:constraint [
+        sh:and (
+            [
+                sh:property [
+                    sh:predicate rdfs:label ;
+                    sh:notEquals oboInOwl:hasRelatedSynonym ;
+                ]
+            ]
+            [
+                sh:property [
+                    sh:predicate rdfs:label ;
+                    sh:notEquals oboInOwl:hasExactSynonym ;
+                ]
+            ]
+            [
+                sh:property [
+                    sh:predicate rdfs:label ;
+                    sh:notEquals oboInOwl:hasNarrowSynonym ;
+                ]
+            ]
+            [
+                sh:property [
+                    sh:predicate rdfs:label ;
+                    sh:notEquals oboInOwl:hasBroadSynonym ;
+                ]
+            ]
+        )
+    ] .
+
+
+ex:ShouldNotHaveLeadingOrTrailingSpaces
+    rdfs:label "Text values should not have leading or trailing spaces." ;
+    a sh:Shape ;
+    sh:scope [
+        a sh:AllObjectsScope ;
+    ] ;
+    sh:filterShape [
+        sh:constraint [
+            sh:nodeKind sh:Literal ;
+            sh:datatype xsd:string 
+        ]
+    ] ;
+    sh:constraint [
+        sh:and (
+            [
+                sh:constraint [
+                    sh:not [
+                        sh:constraint [
+                            sh:pattern "^ "
+                        ]
+                    ]
+                ]
+            ]
+            [
+                sh:constraint [
+                    sh:not [
+                        sh:constraint [
+                            sh:pattern " $"
+                        ]
+                    ]
+                ]
+            ]
+        )
+    ] .
+
+
+ex:LabelsShouldBeUnique
+    rdfs:label "A given label should only be used for one term in the ontology." ;
+    a sh:Shape ;
+    sh:scope [
+        a sh:AllObjectsScope ;
+    ] ;
+    sh:inverseProperty [
+        sh:predicate rdfs:label ;
+        sh:maxCount 1
+    ] .
+
+
+ex:ExactSynonymsShouldBeUnique
+    rdfs:label "A given exact synonym should only be used for one term in the ontology." ;
+    a sh:Shape ;
+    sh:scope [
+        a sh:AllObjectsScope ;
+    ] ;
+    sh:inverseProperty [
+        sh:predicate oboInOwl:hasExactSynonym ;
+        sh:maxCount 1
+    ] .
