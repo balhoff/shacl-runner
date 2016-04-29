@@ -14,6 +14,7 @@ import java.io.InputStream
 import org.apache.jena.util.FileUtils
 import org.topbraid.shacl.vocabulary.SH
 import org.apache.jena.graph.Graph
+import org.topbraid.spin.util.SystemTriples
 
 object RunSHACL extends App {
 
@@ -25,10 +26,15 @@ object RunSHACL extends App {
   shapesModel.read(args(1))
   val dataset = ARQFactory.get.getDataset(ontologyModel)
 
-  val shaclModel = JenaUtil.createDefaultModel()
   // Load the core SHACL definitions
-  val is = getClass().getResourceAsStream("/etc/shacl.ttl")
-  shaclModel.read(is, SH.BASE_URI, FileUtils.langTurtle)
+  val shaclModel = JenaUtil.createDefaultModel();
+  val shaclTTL = getClass().getResourceAsStream("/etc/shacl.ttl");
+  shaclModel.read(shaclTTL, SH.BASE_URI, FileUtils.langTurtle);
+  val dashTTL = getClass().getResourceAsStream("/etc/dash.ttl");
+  shaclModel.read(dashTTL, SH.BASE_URI, FileUtils.langTurtle);
+  shaclModel.add(SystemTriples.getVocabularyModel());
+  SHACLFunctions.registerFunctions(shaclModel);
+  
   // Combine local shape constraints with core SHACL definitions
   val unionGraph: MultiUnion = new MultiUnion(Array(
     shaclModel.getGraph,
