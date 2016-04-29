@@ -7,6 +7,14 @@ An initial set of implemented constraints can be found in [shapes.ttl](https://g
 
 ## Building
 
+First, install the TopBraid SHACL library since it is not yet in Maven central:
+
+```bash
+git clone git@github.com:TopQuadrant/shacl.git
+cd shacl
+mvn install
+```
+
 Install `sbt` on your system. For Mac OS X, it is easily done using [Homebrew](http://brew.sh): `brew install sbt`
 
 `sbt compile`
