@@ -15,6 +15,7 @@ import org.apache.jena.util.FileUtils
 import org.topbraid.shacl.vocabulary.SH
 import org.apache.jena.graph.Graph
 import org.topbraid.spin.util.SystemTriples
+import org.topbraid.shacl.util.SHACLUtil
 
 object RunSHACL extends App {
 
@@ -34,18 +35,19 @@ object RunSHACL extends App {
   shaclModel.read(dashTTL, SH.BASE_URI, FileUtils.langTurtle);
   shaclModel.add(SystemTriples.getVocabularyModel());
   SHACLFunctions.registerFunctions(shaclModel);
-  
+
   // Combine local shape constraints with core SHACL definitions
   val unionGraph: MultiUnion = new MultiUnion(Array(
     shaclModel.getGraph,
     shapesModel.getGraph))
   val unionShapesModel = ModelFactory.createModelForGraph(unionGraph)
+  val unionShapesModelUpdated = SHACLUtil.withDefaultValueTypeInferences(unionShapesModel)
 
   // Register core SHACL functions
-  SHACLFunctions.registerFunctions(unionShapesModel)
+  SHACLFunctions.registerFunctions(unionShapesModelUpdated)
 
   val shapesGraphURI = URI.create("urn:x-shacl-shapes-graph:" + UUID.randomUUID.toString)
-  dataset.addNamedModel(shapesGraphURI.toString, unionShapesModel)
+  dataset.addNamedModel(shapesGraphURI.toString, unionShapesModelUpdated)
 
   // Validate dataset against constraints in shapes graph
   val results = ModelConstraintValidator.get.validateModel(dataset, shapesGraphURI, null, false, null)
