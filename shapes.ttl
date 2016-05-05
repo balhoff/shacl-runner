@@ -4,6 +4,7 @@
 @prefix      xsd: <http://www.w3.org/2001/XMLSchema#>
 @prefix      owl: <http://www.w3.org/2002/07/owl#>
 @prefix oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+@prefix      obo: <http://purl.obolibrary.org/obo/>
 @prefix       ex: <http://example.org/>
 
 
@@ -121,4 +122,47 @@ ex:ExactSynonymsShouldBeUnique
     sh:inverseProperty [
         sh:predicate oboInOwl:hasExactSynonym ;
         sh:maxCount 1
+    ] .
+
+
+ex:NamedClass
+    a sh:Shape ;
+    sh:property [
+        sh:predicate rdf:type ;
+        sh:hasValue owl:Class
+    ] ;
+    sh:constraint [
+        sh:nodeKind sh:IRI
+    ] .
+
+
+ex:NotObsoleteNamedClass
+    a sh:Shape ;
+    sh:constraint [
+        sh:and (
+            ex:NamedClass
+            [
+                sh:constraint [
+                    sh:not [
+                        sh:property [
+                            sh:predicate owl:deprecated ;
+                            sh:hasValue true
+                        ]
+                    ]
+                ]
+            ]
+        )
+    ] .
+
+
+ex:EveryClassShouldHaveADefinition
+    rdfs:label "Every class should have a definition." ;
+    a sh:Shape ;
+    sh:scopeClass owl:Class ;
+    sh:filterShape ex:NotObsoleteNamedClass ;
+    sh:property [
+        sh:predicate obo:IAO_0000115 ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
     ] .
