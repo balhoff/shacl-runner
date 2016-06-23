@@ -164,5 +164,32 @@ ex:EveryClassShouldHaveADefinition
         sh:predicate obo:IAO_0000115 ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
-        sh:maxCount 1 ;
+        sh:maxCount 1
     ] .
+    
+    
+ex:ValueNotShortFormForObsoleteTerm
+    a sh:SPARQLConstraint ;
+    sh:message "Value must not be obsolete." ;
+    sh:sparql """
+        SELECT $this ($this AS ?subject) (<http://www.w3.org/2002/07/owl#deprecated> AS ?predicate) (true AS ?object)
+        WHERE {
+            BIND(IRI(CONCAT("http://purl.obolibrary.org/obo/", REPLACE($this, ":", "_"))) AS ?alt)
+            ?alt <http://www.w3.org/2002/07/owl#deprecated> true .
+        }
+        """ .
+
+
+ex:AltIDsShouldNotPointToObsoleteTerms
+    a sh:Shape ;
+    sh:scope [
+        a sh:PropertyScope ;
+        sh:predicate oboInOwl:hasAlternativeId ;
+    ] ;
+    sh:property [
+        sh:predicate oboInOwl:hasAlternativeId ;
+        sh:valueShape [
+            sh:constraint ex:ValueNotShortFormForObsoleteTerm
+        ]
+    ] .
+
