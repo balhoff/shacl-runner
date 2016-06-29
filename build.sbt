@@ -1,6 +1,8 @@
+enablePlugins(JavaAppPackaging)
+
 organization  := "org.rti.bioinformatics"
 
-name          := "shacl-tests"
+name          := "shacl-runner"
 
 version       := "0.1"
 
