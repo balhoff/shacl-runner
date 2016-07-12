@@ -48,7 +48,7 @@ object RunSHACL extends App {
   dataset.addNamedModel(shapesGraphURI.toString, unionShapesModel)
 
   // Validate dataset against constraints in shapes graph
-  val results = ModelConstraintValidator.get.validateModel(dataset, shapesGraphURI, null, false, null)
+  val results = ModelConstraintValidator.get.validateModel(dataset, shapesGraphURI, null, true, null, null)
   // Need a much better result printer
   if (!results.isEmpty()) {
     println(ModelPrinter.get.print(results))
